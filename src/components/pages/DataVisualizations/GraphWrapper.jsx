@@ -75,6 +75,7 @@ function GraphWrapper(props) {
       console.err(`Error getting data`, err);
     }
   };
+
   const clearQuery = (view, office) => {
     dispatch(resetVisualizationQuery(view, office));
   };
