@@ -7,6 +7,9 @@ import {
   Switch,
 } from 'react-router-dom';
 
+// import Auth0 React
+import { Auth0Provider } from '@auth0/auth0-react';
+
 import 'antd/dist/antd.less';
 import { NotFoundPage } from './components/pages/NotFound';
 import { LandingPage } from './components/pages/Landing';
@@ -22,15 +25,28 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 import reducer from './state/reducers';
 import { colors } from './styles/data_vis_colors';
+import Profile from './components/pages/Profile';
 
 const { primary_accent_color } = colors;
+
+const domain = process.env.REACT_APP_AUTH0_DOMAIN;
+const clientId = process.env.REACT_APP_AUTH0_CLIENT_ID;
 
 const store = configureStore({ reducer: reducer });
 ReactDOM.render(
   <Router>
     <Provider store={store}>
       <React.StrictMode>
-        <App />
+        <Auth0Provider
+          domain={domain}
+          clientId={clientId}
+          authorizationParams={{
+            // redirect_uri:'http://localhost:3000/profile',
+            redirect_uri: window.location.origin,
+          }}
+        >
+          <App />
+        </Auth0Provider>
       </React.StrictMode>
     </Provider>
   </Router>,
@@ -39,6 +55,7 @@ ReactDOM.render(
 
 export function App() {
   const { Footer, Header } = Layout;
+
   return (
     <Layout>
       <Header
@@ -54,6 +71,7 @@ export function App() {
       <Switch>
         <Route path="/" exact component={LandingPage} />
         <Route path="/graphs" component={GraphsContainer} />
+        <Route path="/profile" component={Profile} />
         <Route component={NotFoundPage} />
       </Switch>
       <Footer
